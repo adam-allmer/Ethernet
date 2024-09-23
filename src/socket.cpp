@@ -587,7 +587,7 @@ void EthernetICMPPing::receiveEchoReply(const EthernetICMPEcho& echoReq, const I
 		case ICMP_ECHOREP: {
 			if (echoReply.data.id == echoReq.id
 					&& echoReply.data.seq == echoReq.seq) {
-				echoReply.status = SUCCESS;
+				echoReply.status = ICMP_SUCCESS;
 				return;
 			}
 			break;
@@ -607,7 +607,7 @@ void EthernetICMPPing::receiveEchoReply(const EthernetICMPEcho& echoReq, const I
 			uint16_t sourceSeq = ntohs(*(uint16_t * )(sourceIcmpHeader + 6));
 
 			if (sourceId == echoReq.id && sourceSeq == echoReq.seq) {
-				echoReply.status = BAD_RESPONSE;
+				echoReply.status = ICMP_BAD_RESPONSE;
 				return;
 			}
 			break;
@@ -616,7 +616,7 @@ void EthernetICMPPing::receiveEchoReply(const EthernetICMPEcho& echoReq, const I
 
 
     }
-    echoReply.status = NO_RESPONSE;
+    echoReply.status = ICMP_NO_RESPONSE;
 }
 
 Status EthernetICMPPing::sendEchoRequest(const IPAddress& addr, const EthernetICMPEcho& echoReq)
@@ -643,11 +643,11 @@ Status EthernetICMPPing::sendEchoRequest(const IPAddress& addr, const EthernetIC
         if (W5100.readSnIR(_socket) & SnIR::TIMEOUT)
         {
             W5100.writeSnIR(_socket, (SnIR::SEND_OK | SnIR::TIMEOUT));
-            return SEND_TIMEOUT;
+            return ICMP_SEND_TIMEOUT;
         }
 
         ICMPPING_DOYIELD();
     }
     W5100.writeSnIR(_socket, SnIR::SEND_OK);
-    return SUCCESS;
+    return ICMP_SUCCESS;
 }

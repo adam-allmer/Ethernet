@@ -74,11 +74,11 @@ typedef enum Status
     conditions. These correspond to error conditions that occur in this
     library, not anything defined in the ICMP protocol.
     */
-    SUCCESS = 0,
-    SEND_TIMEOUT = 1, // Timed out sending the request
-    NO_RESPONSE = 2, // Died waiting for a response
-    BAD_RESPONSE = 3, // we got back the wrong type
-    ASYNC_SENT = 4
+    ICMP_SUCCESS = 0,    // Renamed to avoid conflict
+    ICMP_SEND_TIMEOUT = 1, 
+    ICMP_NO_RESPONSE = 2, 
+    ICMP_BAD_RESPONSE = 3, 
+    ICMP_ASYNC_SENT = 4
 } Status;
 
 

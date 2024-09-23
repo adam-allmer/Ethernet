@@ -135,7 +135,7 @@ uint16_t EthernetICMPPing::ping_timeout = PING_TIMEOUT;
 
 EthernetICMPPing::EthernetICMPPing(SOCKET socket, uint8_t id) :
 #ifdef ICMPPING_ASYNCH_ENABLE
-  _curSeq(0), _numRetries(0), _asyncstart(0), _asyncstatus(BAD_RESPONSE),
+  _curSeq(0), _numRetries(0), _asyncstart(0), _asyncstatus(ICMP_BAD_RESPONSE),
 #endif
   _id(id), _nextSeq(0), _socket(socket),  _attempt(0)
 {
@@ -178,13 +178,13 @@ void EthernetICMPPing::operator()(const IPAddress& addr, int nRetries, EthernetI
     	ICMPPING_DOYIELD();
 
         result.status = sendEchoRequest(addr, echoReq);
-        if (result.status == SUCCESS)
+        if (result.status == ICMP_SUCCESS)
         {
             byte replyAddr [4];
         	ICMPPING_DOYIELD();
             receiveEchoReply(echoReq, addr, result);
         }
-        if (result.status == SUCCESS)
+        if (result.status == ICMP_SUCCESS)
         {
             break;
         }
@@ -215,7 +215,7 @@ bool EthernetICMPPing::asyncSend(EthernetICMPEchoReply& result)
 {
     EthernetICMPEcho echoReq(ICMP_ECHOREQ, _id, _curSeq, _payload);
 
-    Status sendOpResult(NO_RESPONSE);
+    Status sendOpResult(ICMP_NO_RESPONSE);
     bool sendSuccess = false;
     for (uint8_t i=_attempt; i<_numRetries; ++i)
     {
@@ -223,10 +223,10 @@ bool EthernetICMPPing::asyncSend(EthernetICMPEchoReply& result)
 
     	ICMPPING_DOYIELD();
     	sendOpResult = sendEchoRequest(_addr, echoReq);
-    	if (sendOpResult == SUCCESS)
+    	if (sendOpResult == ICMP_SUCCESS)
     	{
     		sendSuccess = true; // it worked
-    		sendOpResult = ASYNC_SENT; // we're doing this async-style, force the status
+    		sendOpResult = ICMP_ASYNC_SENT; // we're doing this async-style, force the status
     		_asyncstart = millis(); // not the start time, for timeouts
     		break; // break out of this loop, 'cause we're done.
 
@@ -254,7 +254,7 @@ bool EthernetICMPPing::asyncStart(const IPAddress& addr, int nRetries, EthernetI
 bool EthernetICMPPing::asyncComplete(EthernetICMPEchoReply& result)
 {
 
-	if (_asyncstatus != ASYNC_SENT)
+	if (_asyncstatus != ICMP_ASYNC_SENT)
 	{
 		// we either:
 		//  - didn't start an async request;
@@ -309,7 +309,7 @@ bool EthernetICMPPing::asyncComplete(EthernetICMPEchoReply& result)
 		// we timed out and have no more attempts left...
 		// hello?  is anybody out there?
 		// guess not:
-	    result.status = NO_RESPONSE;
+	    result.status = ICMP_NO_RESPONSE;
 
 	    // Close RAW socket to allow device being pinged again
 	    closeSocket();
