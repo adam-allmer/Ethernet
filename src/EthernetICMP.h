@@ -28,7 +28,7 @@
 #ifndef EthernetICMP_h
 #define EthernetICMP_h
 
-#include <Ethernet.h>
+#include "Ethernet.h"
 #include "utility/w5100.h"
 
 

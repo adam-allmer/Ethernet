@@ -16,6 +16,7 @@
 
 #include <Arduino.h>
 #include <SPI.h>
+#include "Ethernet.h"
 
 // Safe for all chips
 #define SPI_ETHERNET_SETTINGS SPISettings(14000000, MSBFIRST, SPI_MODE0)

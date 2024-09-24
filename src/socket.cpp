@@ -21,13 +21,7 @@
 #include <Arduino.h>
 #include "Ethernet.h"
 #include "utility/w5100.h"
-#include "EthernetIcmp.h"
-
-#ifdef ICMPPING_INSERT_YIELDS
-#define ICMPPING_DOYIELD()		delay(2)
-#else
-#define ICMPPING_DOYIELD()
-#endif
+#include "EthernetICMP.h"
 
 #if ARDUINO >= 156 && !defined(ARDUINO_ARCH_PIC32)
 extern void yield(void);
